@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Contraseña</title>
+</head>
+<body>
+    <h2>Recuperar Contraseña</h2>
+    <input type="text" id="carnet" placeholder="Ingrese su carnet">
+    <button onclick="consultar()">Consultar</button>
+    <p id="resultado"></p>
+
+    <script>
+        function consultar() {
+            let carnet = document.getElementById("carnet").value;
+            fetch(`https://carnetapi.onrender.com/get-password?carnet=${carnet}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById("resultado").innerText = "Error: " + data.error;
+                    } else {
+                        document.getElementById("resultado").innerText = "Tu contraseña es: " + data.contraseña;
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+</html>
