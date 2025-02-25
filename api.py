@@ -1,7 +1,10 @@
 from flask import Flask, request, jsonify
 import pandas as pd
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # Habilita CORS para todas las rutas
+
 
 # Cargar el archivo Excel al iniciar la API
 EXCEL_PATH = "contraseñas_estudiantes.xlsx"
@@ -20,7 +23,7 @@ def get_password():
     password = data_dict.get(carnet)
     
     if password:
-        return jsonify({"carnet": carnet, "contraseña": password})
+        return jsonify({"carnet": carnet, "contrasena": password})
     else:
         return jsonify({"error": "Carnet no encontrado"}), 404
 
