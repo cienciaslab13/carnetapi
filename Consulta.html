@@ -4,12 +4,130 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recuperar Contraseña</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f3f4f6;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 22px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 18px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .resultado-container {
+            margin-top: 15px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .resultado-container label {
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .password-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        #password {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 18px;
+            background: #f9f9f9;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+        }
+
+        #copy-btn {
+            background: #28a745;
+            border: none;
+            color: white;
+            font-size: 16px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #copy-btn:hover {
+            background: #218838;
+        }
+    </style>
 </head>
 <body>
-    <h2>Recuperar Contraseña</h2>
-    <input type="text" id="carnet" placeholder="Ingrese su carnet">
-    <button onclick="consultar()">Consultar</button>
-    <p id="resultado"></p>
+    <div class="container">
+        <h2>Obtener Contraseña</h2>
+        <input type="text" id="carnet" placeholder="Ingrese su carnet sin guiones">
+        <button onclick="consultar()">Consultar</button>
+
+        <div class="resultado-container" id="resultado-container">
+            <label>Su contraseña es:</label>
+            <div class="password-box">
+                <input type="text" id="password" readonly>
+                <button id="copy-btn" onclick="copiarTexto()">📋</button>
+
+                
+            </div>
+            <a href="https://ciencias.dedv.unan.edu.ni/login/index.php">Ingresar en el curso</a>
+        </div>
+    </div>
 
     <script>
         function consultar() {
@@ -17,13 +135,30 @@
             fetch(`https://carnetapi.onrender.com/get-password?carnet=${carnet}`)
                 .then(response => response.json())
                 .then(data => {
+                    let resultadoContainer = document.getElementById("resultado-container");
+                    let passwordInput = document.getElementById("password");
+                    let copyBtn = document.getElementById("copy-btn");
+
                     if (data.error) {
-                        document.getElementById("resultado").innerText = "Error: " + data.error;
+                        alert("❌ Error: " + data.error);
+                        resultadoContainer.style.display = "none";
                     } else {
-                        document.getElementById("resultado").innerText = "Tu contraseña es: " + data.contraseña;
+                        passwordInput.value = data.contrasena;
+                        resultadoContainer.style.display = "flex";
                     }
                 })
-                .catch(error => console.error("Error:", error));
+                .catch(error => {
+                    alert("❌ Error al consultar. Intente nuevamente.");
+                });
+        }
+
+        function copiarTexto() {
+            let passwordInput = document.getElementById("password");
+            navigator.clipboard.writeText(passwordInput.value).then(() => {
+                alert("✅ Contraseña copiada al portapapeles!");
+            }).catch(err => {
+                alert("❌ Error al copiar: " + err);
+            });
         }
     </script>
 </body>
